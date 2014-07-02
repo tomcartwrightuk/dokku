@@ -66,6 +66,7 @@ case "$1" in
 
     # if we can't post-deploy successfully, kill new container
     function kill_new {
+      echo "There was an issue with checks - killing new container"
       docker inspect $id &> /dev/null && docker kill $id > /dev/null
       trap - INT TERM EXIT
       kill -9 $$
@@ -82,6 +83,7 @@ case "$1" in
     ;;
   
   switch)
+    echo "Switching to new container"
     APP="$2"; IMAGE="dokku/$APP"
     oldid="$DOKKU_ROOT/$APP/OLD_CONTAINER"
     port="$DOKKU_ROOT/$APP/PORT"
