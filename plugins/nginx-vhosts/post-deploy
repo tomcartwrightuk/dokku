@@ -84,6 +84,6 @@ EOF
 
   echo "http://$hostname" > "$DOKKU_ROOT/$APP/URL"
   fi
-  pluginhook nginx-pre-reload $APP
+  pluginhook nginx-pre-reload $APP $PORT
   sudo /etc/init.d/nginx reload > /dev/null
 fi
