@@ -85,8 +85,8 @@ case "$1" in
   switch)
     echo "Switching to new container"
     APP="$2"; IMAGE="dokku/$APP"
-    oldid="$DOKKU_ROOT/$APP/OLD_CONTAINER"
-    port="$DOKKU_ROOT/$APP/PORT"
+    oldid=$(cat "$DOKKU_ROOT/$APP/OLD_CONTAINER")
+    port=$(cat "$DOKKU_ROOT/$APP/PORT")
 
     pluginhook post-deploy  $APP $port
     # now using the new container
