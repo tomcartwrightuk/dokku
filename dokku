@@ -21,6 +21,8 @@ case "$1" in
     cat | dokku build $APP
     echo "-----> Releasing $APP ..."
     dokku release $APP
+    echo "-----> Deploying $APP ..."
+    dokku deploy $APP
     echo
     ;;
 
@@ -73,13 +75,19 @@ case "$1" in
     trap kill_new INT TERM EXIT
     echo "-----> Running pre-flight checks"
     pluginhook check-deploy $id $APP $port
-    echo "-----> Running post-deploy"
-    pluginhook post-deploy  $APP $port
-    trap -        INT TERM EXIT
-
-    # now using the new container
+    echo $oldid > "$DOKKU_ROOT/$APP/OLD_CONTAINER"
     echo $id > "$DOKKU_ROOT/$APP/CONTAINER"
     echo $port > "$DOKKU_ROOT/$APP/PORT"
+    trap -        INT TERM EXIT
+    ;;
+  
+  switch)
+    APP="$2"; IMAGE="dokku/$APP"
+    oldid="$DOKKU_ROOT/$APP/OLD_CONTAINER"
+    port="$DOKKU_ROOT/$APP/PORT"
+
+    pluginhook post-deploy  $APP $port
+    # now using the new container
     echo "http://$(< "$DOKKU_ROOT/HOSTNAME"):$port" > "$DOKKU_ROOT/$APP/URL"
 
     if [[ -n "$oldid" ]]; then
